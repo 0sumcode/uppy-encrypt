@@ -22,6 +22,15 @@ export default class UppyEncryptPlugin extends BasePlugin {
           data: blob,
           size: blob.size,
         });
+
+        this.uppy.setFileMeta(fileId, {
+          UppyEncrypt: {
+            salt: enc.getSalt(),
+            header: enc.getHeader(),
+            passwordHash: enc.getPasswordHash(),
+            encryptedMeta: enc.getEncryptMetaData(),
+          },
+        });
       }
     }
   }
