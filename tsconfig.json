@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES2015",
+    "sourceMap": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "removeComments": true,
+    "declaration": true
+  },
+  "include": ["types/**/*", "src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
