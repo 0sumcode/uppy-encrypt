@@ -1,0 +1,25 @@
+{
+  "name": "uppy-encrypt",
+  "version": "1.0.0",
+  "description": "Uppy plugin to encrypt and decrypt files in the browser before upload using libsodium-wrappers",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danhstevens/uppy-encrypt.git"
+  },
+  "keywords": [
+    "uppy",
+    "encrypt",
+    "decrypt",
+    "libsodium"
+  ],
+  "author": "Dan Stevens",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danhstevens/uppy-encrypt/issues"
+  },
+  "homepage": "https://github.com/danhstevens/uppy-encrypt#readme"
+}
