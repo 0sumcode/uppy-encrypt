@@ -56,10 +56,16 @@ export class UppyEncrypt {
     this.passwordHash = sodium.crypto_pwhash_str(password, sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE, sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE);
   }
 
+  /**
+   * Helper function that generate a random password
+   */
   static generatePassword() {
     return sodium.to_base64(sodium.randombytes_buf(16), sodium.base64_variants.URLSAFE_NO_PADDING);
   }
 
+  /**
+   * Encrypts the file
+   */
   async encryptFile() {
     if (!this.streamController) {
       throw new Error('Encryption stream does not exist');
@@ -108,11 +114,19 @@ export class UppyEncrypt {
     return true;
   }
 
+  /**
+   * Creates and returns a Blob of the encrypted file
+   */
   async getEncryptedFile() {
     const response = new Response(this.stream);
     return response.blob();
   }
 
+  /**
+   * Returns an encrypted representation of the file's metadata (name, content-type)
+   * header: base64-encoded header data
+   * meta: Encrypted JSON string of the file's metadata, base64-encoded
+   */
   getEncryptMetaData() {
     // Init fresh state
     const res = sodium.crypto_secretstream_xchacha20poly1305_init_push(this.key);
@@ -131,14 +145,26 @@ export class UppyEncrypt {
     };
   }
 
+  /**
+   * Returns a hash of the password base64-encoded
+   * This data is safe to store in a database, etc
+   */
   getPasswordHash() {
     return this.passwordHash;
   }
 
+  /**
+   * Returns the header base64-encoded
+   * This data is safe to store in a database, etc
+   */
   getHeader() {
     return sodium.to_base64(this.header, sodium.base64_variants.URLSAFE_NO_PADDING);
   }
 
+  /**
+   * Returns the salt base64-encoded
+   * This data is safe to store in a database, etc
+   */
   getSalt() {
     return sodium.to_base64(this.salt, sodium.base64_variants.URLSAFE_NO_PADDING);
   }

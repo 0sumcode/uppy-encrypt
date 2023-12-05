@@ -46,10 +46,20 @@ export class UppyDecrypt {
     this.index = SIGNATURE.length + saltUint.length + headerUint.length;
   }
 
+  /**
+   * Validates that the provided password is correct
+   * @param hash The hash value of the password created during UppyEncrypt
+   * @param password The user-provided password
+   * @returns {bool} true if correct password
+   */
   static verifyPassword(hash: string, password: string) {
     return sodium.crypto_pwhash_str_verify(hash, password);
   }
 
+  /**
+   * Decrypts the provided file
+   * @param file Blob of encryptyed file
+   */
   async decryptFile(file: Blob) {
     if (!this.streamController) {
       throw new Error('Encryption stream does not exist');
@@ -67,11 +77,21 @@ export class UppyDecrypt {
     this.streamController.close();
   }
 
+  /**
+   *
+   * @returns Decrypted file as a blob
+   */
   async getDecryptedFile() {
     const response = new Response(this.stream);
     return response.blob();
   }
 
+  /**
+   *
+   * @param header Header created during encryption of the meta data
+   * @param meta Encrypted meta data string
+   * @returns object of the decrypted meta data
+   */
   getDecryptedMetaData(header: string, meta: string) {
     // Init fresh state
     const state = sodium.crypto_secretstream_xchacha20poly1305_init_pull(sodium.from_base64(header, sodium.base64_variants.URLSAFE_NO_PADDING), this.key);
