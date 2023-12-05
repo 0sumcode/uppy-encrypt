@@ -12,7 +12,7 @@ export default class UppyEncryptPlugin extends BasePlugin {
   async encryptFiles(fileIds: string[]) {
     for (const fileId of fileIds) {
       const file = this.uppy.getFile(fileId);
-      const password = UppyEncrypt.generatePassword();
+      const password = typeof file.meta.password === 'string' ? file.meta.password : UppyEncrypt.generatePassword();
       const enc = new UppyEncrypt(this.uppy, file, password);
       if (await enc.encryptFile()) {
         this.uppy.emit('preprocess-complete', file);
