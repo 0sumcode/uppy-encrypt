@@ -1,4 +1,5 @@
-import { UppyEncrypt } from './UppyEncrypt';
+import UppyEncrypt from './UppyEncrypt';
+import UppyDecrypt from './UppyDecrypt';
 import { BasePlugin, type DefaultPluginOptions, Uppy } from '@uppy/core';
 
 interface UppyEncryptPluginOptions extends DefaultPluginOptions {
@@ -61,4 +62,4 @@ export class UppyEncryptPlugin extends BasePlugin {
   }
 }
 
-export const generatePassword = UppyEncrypt.generatePassword;
+export { UppyEncrypt, UppyDecrypt };

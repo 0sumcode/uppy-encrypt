@@ -13,7 +13,7 @@ let sodium: typeof _sodium;
   sodium = _sodium;
 })();
 
-export class UppyDecrypt {
+export default class UppyDecrypt {
   private key: Uint8Array;
   private state: _sodium.StateAddress;
   private stream: ReadableStream;

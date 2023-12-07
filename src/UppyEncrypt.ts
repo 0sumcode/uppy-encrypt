@@ -9,7 +9,7 @@ let sodium: typeof _sodium;
   sodium = _sodium;
 })();
 
-export class UppyEncrypt {
+export default class UppyEncrypt {
   private uppy: Uppy;
   private password: string;
   private salt: Uint8Array;
