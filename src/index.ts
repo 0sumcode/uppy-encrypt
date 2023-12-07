@@ -1,7 +1,7 @@
 import { UppyEncrypt } from './UppyEncrypt';
 import { BasePlugin, type DefaultPluginOptions, Uppy } from '@uppy/core';
 
-export default class UppyEncryptPlugin extends BasePlugin {
+export class UppyEncryptPlugin extends BasePlugin {
   constructor(uppy: Uppy, opts?: DefaultPluginOptions | undefined) {
     super(uppy, opts);
     this.id = opts?.id ?? 'UppyEncryptPlugin';
@@ -43,3 +43,5 @@ export default class UppyEncryptPlugin extends BasePlugin {
     this.uppy.removePreProcessor(this.encryptFiles);
   }
 }
+
+export const generatePassword = UppyEncrypt.generatePassword;
