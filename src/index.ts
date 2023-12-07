@@ -2,7 +2,7 @@ import { UppyEncrypt } from './UppyEncrypt';
 import { BasePlugin, type DefaultPluginOptions, Uppy } from '@uppy/core';
 
 interface UppyEncryptPluginOptions extends DefaultPluginOptions {
-  password: string;
+  password: string | null;
 }
 
 export class UppyEncryptPlugin extends BasePlugin {
@@ -14,7 +14,7 @@ export class UppyEncryptPlugin extends BasePlugin {
     this.type = 'modifier';
 
     const defaultOptions = {
-      password: UppyEncrypt.generatePassword(),
+      password: null,
     };
     this.opts = { ...defaultOptions, ...opts };
 
@@ -22,6 +22,12 @@ export class UppyEncryptPlugin extends BasePlugin {
   }
 
   async encryptFiles(fileIds: string[]) {
+    // Generate a password here if none is already set
+    this.opts.password = this.opts.password || UppyEncrypt.generatePassword();
+
+    // Add password to meta data so it can be referenced externally
+    this.uppy.setMeta({ password: this.opts.password });
+
     for (const fileId of fileIds) {
       const file = this.uppy.getFile(fileId);
       const enc = new UppyEncrypt(this.uppy, file, this.opts.password);
@@ -35,11 +41,11 @@ export class UppyEncryptPlugin extends BasePlugin {
         });
 
         this.uppy.setFileMeta(fileId, {
-          UppyEncrypt: {
+          encryption: {
             salt: enc.getSalt(),
             header: enc.getHeader(),
-            passwordHash: enc.getPasswordHash(),
-            encryptedMeta: enc.getEncryptMetaData(),
+            hash: enc.getPasswordHash(),
+            meta: enc.getEncryptMetaData(),
           },
         });
       }

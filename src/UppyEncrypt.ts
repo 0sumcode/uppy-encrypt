@@ -11,6 +11,7 @@ let sodium: typeof _sodium;
 
 export class UppyEncrypt {
   private uppy: Uppy;
+  private password: string;
   private salt: Uint8Array;
   private key: Uint8Array;
   private state: _sodium.StateAddress;
@@ -19,13 +20,13 @@ export class UppyEncrypt {
   private stream: ReadableStream;
   private streamController: ReadableStreamDefaultController | undefined;
   private streamCanceled = false;
-  private passwordHash: string;
 
   private index = 0;
 
   constructor(uppy: Uppy, file: UppyFile<Record<string, unknown>, Record<string, unknown>>, password: string) {
     this.uppy = uppy;
     this.file = file;
+    this.password = password;
 
     // Set Uppy event handlers that effect the encryption process
     uppy.on('cancel-all', () => {
@@ -52,8 +53,6 @@ export class UppyEncrypt {
     const res = sodium.crypto_secretstream_xchacha20poly1305_init_push(this.key);
     this.state = res.state;
     this.header = res.header;
-
-    this.passwordHash = sodium.crypto_pwhash_str(password, sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE, sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE);
   }
 
   /**
@@ -141,7 +140,7 @@ export class UppyEncrypt {
 
     return {
       header: sodium.to_base64(res.header, sodium.base64_variants.URLSAFE_NO_PADDING),
-      meta: sodium.to_base64(encryptedChunk, sodium.base64_variants.URLSAFE_NO_PADDING),
+      data: sodium.to_base64(encryptedChunk, sodium.base64_variants.URLSAFE_NO_PADDING),
     };
   }
 
@@ -150,7 +149,7 @@ export class UppyEncrypt {
    * This data is safe to store in a database, etc
    */
   getPasswordHash() {
-    return this.passwordHash;
+    return sodium.crypto_pwhash_str(this.password, sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE, sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE);
   }
 
   /**
