@@ -1,19 +1,30 @@
 import { UppyEncrypt } from './UppyEncrypt';
 import { BasePlugin, type DefaultPluginOptions, Uppy } from '@uppy/core';
 
+interface UppyEncryptPluginOptions extends DefaultPluginOptions {
+  password: string;
+}
+
 export class UppyEncryptPlugin extends BasePlugin {
-  constructor(uppy: Uppy, opts?: DefaultPluginOptions | undefined) {
+  opts: UppyEncryptPluginOptions;
+
+  constructor(uppy: Uppy, opts?: UppyEncryptPluginOptions | undefined) {
     super(uppy, opts);
     this.id = opts?.id ?? 'UppyEncryptPlugin';
     this.type = 'modifier';
+
+    const defaultOptions = {
+      password: UppyEncrypt.generatePassword(),
+    };
+    this.opts = { ...defaultOptions, ...opts };
+
     this.encryptFiles = this.encryptFiles.bind(this);
   }
 
   async encryptFiles(fileIds: string[]) {
     for (const fileId of fileIds) {
       const file = this.uppy.getFile(fileId);
-      const password = typeof file.meta.password === 'string' ? file.meta.password : UppyEncrypt.generatePassword();
-      const enc = new UppyEncrypt(this.uppy, file, password);
+      const enc = new UppyEncrypt(this.uppy, file, this.opts.password);
       if (await enc.encryptFile()) {
         this.uppy.emit('preprocess-complete', file);
         let blob = await enc.getEncryptedFile();
