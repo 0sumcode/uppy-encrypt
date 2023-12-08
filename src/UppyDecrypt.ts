@@ -59,6 +59,7 @@ export default class UppyDecrypt {
   /**
    * Decrypts the provided file
    * @param file Blob of encryptyed file
+   * @returns Decrypted file as a blob
    */
   async decryptFile(file: Blob) {
     if (!this.streamController) {
@@ -75,13 +76,7 @@ export default class UppyDecrypt {
     }
 
     this.streamController.close();
-  }
 
-  /**
-   *
-   * @returns Decrypted file as a blob
-   */
-  async getDecryptedFile() {
     const response = new Response(this.stream);
     return response.blob();
   }
