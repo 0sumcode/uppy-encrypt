@@ -1,10 +1,21 @@
 import UppyEncrypt from './UppyEncrypt';
 import UppyDecrypt from './UppyDecrypt';
+import _sodium from 'libsodium-wrappers-sumo';
 import { BasePlugin, type DefaultPluginOptions, Uppy } from '@uppy/core';
 
 interface UppyEncryptPluginOptions extends DefaultPluginOptions {
   password: string | null;
 }
+
+// Init sodium, makes a callback when library is ready
+let uppyEncryptReady: Function = () => {};
+export const onUppyEncryptReady = (fn: Function) => {
+  uppyEncryptReady = fn;
+};
+(async () => {
+  await _sodium.ready;
+  uppyEncryptReady();
+})();
 
 export class UppyEncryptPlugin extends BasePlugin {
   opts: UppyEncryptPluginOptions;
