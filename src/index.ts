@@ -1,5 +1,5 @@
 import UppyEncrypt from './UppyEncrypt';
-import UppyDecrypt from './UppyDecrypt';
+import UppyDecrypt, { type DecryptedMetaData } from './UppyDecrypt';
 import _sodium from 'libsodium-wrappers-sumo';
 import { BasePlugin, type DefaultPluginOptions, Uppy } from '@uppy/core';
 
@@ -73,4 +73,4 @@ export class UppyEncryptPlugin extends BasePlugin {
   }
 }
 
-export { UppyEncrypt, UppyDecrypt };
+export { UppyEncrypt, UppyDecrypt, DecryptedMetaData };

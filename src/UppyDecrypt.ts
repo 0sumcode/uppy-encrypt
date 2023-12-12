@@ -1,7 +1,7 @@
 import _sodium from 'libsodium-wrappers-sumo';
 import { CHUNK_SIZE, SIGNATURE } from './constants';
 
-interface DecryptedMetaData {
+export interface DecryptedMetaData {
   name: string;
   type?: string;
 }
@@ -18,6 +18,7 @@ export default class UppyDecrypt {
   private state: _sodium.StateAddress;
   private stream: ReadableStream;
   private streamController: ReadableStreamDefaultController | undefined;
+  private contentType: string;
 
   private index = 0;
 
@@ -31,6 +32,7 @@ export default class UppyDecrypt {
         this.streamController = controller;
       },
     });
+    this.contentType = ''; // Defined if/when meta-data is decrypted
 
     this.key = sodium.crypto_pwhash(
       sodium.crypto_secretstream_xchacha20poly1305_KEYBYTES,
@@ -77,7 +79,7 @@ export default class UppyDecrypt {
 
     this.streamController.close();
 
-    const response = new Response(this.stream);
+    const response = new Response(this.stream, { headers: { 'Content-Type': this.contentType } });
     return response.blob();
   }
 
@@ -93,6 +95,8 @@ export default class UppyDecrypt {
     const decryptedChunk = sodium.crypto_secretstream_xchacha20poly1305_pull(state, sodium.from_base64(meta, sodium.base64_variants.URLSAFE_NO_PADDING));
 
     if (!decryptedChunk) throw new Error('Unable to decrypt meta data');
-    return JSON.parse(new TextDecoder().decode(decryptedChunk.message)) as DecryptedMetaData;
+    const decryptedMeta = JSON.parse(new TextDecoder().decode(decryptedChunk.message)) as DecryptedMetaData;
+    if (decryptedMeta.type) this.contentType = decryptedMeta.type;
+    return decryptedMeta;
   }
 }
