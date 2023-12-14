@@ -53,6 +53,8 @@ export class UppyEncryptPlugin extends BasePlugin {
         });
 
         this.uppy.setFileMeta(fileId, {
+          name: `${file.name}.enc`,
+          type: 'application/octet-stream',
           encryption: {
             salt: enc.getSalt(),
             header: enc.getHeader(),
