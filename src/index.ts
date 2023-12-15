@@ -7,15 +7,15 @@ interface UppyEncryptPluginOptions extends DefaultPluginOptions {
   password: string | null;
 }
 
-// Init sodium, makes a callback when library is ready
-let uppyEncryptReady: Function = () => {};
-export const onUppyEncryptReady = (fn: Function) => {
-  uppyEncryptReady = fn;
+// Sodium is initialized automatically within UppyEncrypt / UppyDecrypt
+// Optionally call this to ensure initialization
+let sodiumIsReady = false;
+export const uppyEncryptReady = async () => {
+  if (!sodiumIsReady) {
+    await _sodium.ready;
+    sodiumIsReady = true;
+  }
 };
-(async () => {
-  await _sodium.ready;
-  uppyEncryptReady();
-})();
 
 export class UppyEncryptPlugin extends BasePlugin {
   opts: UppyEncryptPluginOptions;
