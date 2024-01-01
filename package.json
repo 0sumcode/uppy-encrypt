@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/danhstevens/uppy-encrypt.git"
+    "url": "git+https://github.com/0sumcode/uppy-encrypt.git"
   },
   "keywords": [
     "uppy",
@@ -25,9 +25,9 @@
   "author": "Dan Stevens",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/danhstevens/uppy-encrypt/issues"
+    "url": "https://github.com/0sumcode/uppy-encrypt/issues"
   },
-  "homepage": "https://github.com/danhstevens/uppy-encrypt#readme",
+  "homepage": "https://github.com/0sumcode/uppy-encrypt#readme",
   "devDependencies": {
     "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
