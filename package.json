@@ -1,7 +1,8 @@
 {
   "name": "uppy-encrypt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Uppy plugin to encrypt and decrypt files in the browser before upload using libsodium-wrappers",
+  "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
