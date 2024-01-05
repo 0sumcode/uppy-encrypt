@@ -4,6 +4,8 @@ An [Uppy](https://uppy.io/) Plugin to encrypt files on the browser before it's u
 
 Uppy Encrypt uses [libsodium.js](https://github.com/jedisct1/libsodium.js) for all the cryptographical magic.
 
+A live implementation of Uppy Encrypt can be seen on [0up.io](https://0up.io) [[Source Code]](https://github.com/0sumcode/0up)
+
 ## Installation
 
 ```bash
