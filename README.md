@@ -1,6 +1,8 @@
 # Uppy Encrypt
 
-An [Uppy](https://uppy.io/) Plugin to encrypt files on the browser before it's uploaded. Uppy Encrypt also comes with the ability to decrypt browser-side.
+An [Uppy](https://uppy.io/) Plugin to encrypt files via the browser before they're uploaded. Decryption is handled browser-side as well.
+
+Oh, also, it's fast AF. 🚀
 
 Uppy Encrypt uses [libsodium.js](https://github.com/jedisct1/libsodium.js) for all the cryptographical magic.
 
