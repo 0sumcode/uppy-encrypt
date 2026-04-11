@@ -8,10 +8,20 @@ Uppy Encrypt uses [libsodium.js](https://github.com/jedisct1/libsodium.js) for a
 
 A live implementation of Uppy Encrypt can be seen on [0up.io](https://0up.io) [[Source Code]](https://github.com/0sumcode/0up)
 
+## Compatibility
+
+`uppy-encrypt` supports both `@uppy/core` 3.x and 4.x. `@uppy/core` is a peer
+dependency, so install it alongside `uppy-encrypt`:
+
+| uppy-encrypt | @uppy/core     |
+| ------------ | -------------- |
+| `^2.0.0`     | `^3.7.1 \|\| ^4.0.0` |
+| `^1.0.0`     | `^3.7.1`       |
+
 ## Installation
 
 ```bash
-npm i uppy-encrypt
+npm i uppy-encrypt @uppy/core
 ```
 
 ## Encryption Example

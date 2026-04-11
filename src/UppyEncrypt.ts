@@ -2,6 +2,11 @@ import type { Uppy, UppyFile } from '@uppy/core';
 import _sodium from 'libsodium-wrappers-sumo';
 import { CHUNK_SIZE, SIGNATURE } from './constants';
 
+// `any` generics keep this compatible with both Uppy 3.x
+// (`UppyFile<TMeta, TBody>`) and Uppy 4.x (`UppyFile<M extends Meta, B extends Body>`)
+// without forcing consumers to pin a specific Body shape.
+type AnyUppyFile = UppyFile<any, any>;
+
 // Init Sodium
 let sodium: typeof _sodium;
 (async () => {
@@ -16,17 +21,21 @@ export default class UppyEncrypt {
   private key: Uint8Array;
   private state: _sodium.StateAddress;
   private header: Uint8Array;
-  private file: UppyFile<Record<string, unknown>, Record<string, unknown>>;
+  private file: AnyUppyFile;
+  private fileSize: number;
   private stream: ReadableStream;
   private streamController: ReadableStreamDefaultController | undefined;
   private streamCanceled = false;
 
   private index = 0;
 
-  constructor(uppy: Uppy, file: UppyFile<Record<string, unknown>, Record<string, unknown>>, password: string) {
+  constructor(uppy: Uppy, file: AnyUppyFile, password: string) {
     this.uppy = uppy;
     this.file = file;
     this.password = password;
+    // Uppy 4 types `UppyFile.size` as `number | null`; fall back to the
+    // underlying Blob/File size when Uppy hasn't populated it yet.
+    this.fileSize = file.size ?? file.data.size;
 
     // Set Uppy event handlers that effect the encryption process
     uppy.on('cancel-all', () => {
@@ -70,7 +79,7 @@ export default class UppyEncrypt {
       throw new Error('Encryption stream does not exist');
     }
 
-    while (this.index < this.file.size) {
+    while (this.index < this.fileSize) {
       if (this.streamCanceled) {
         await this.stream.cancel();
         return false;
@@ -84,7 +93,7 @@ export default class UppyEncrypt {
       }
 
       const tag =
-        this.index + CHUNK_SIZE < this.file.size
+        this.index + CHUNK_SIZE < this.fileSize
           ? sodium.crypto_secretstream_xchacha20poly1305_TAG_MESSAGE
           : sodium.crypto_secretstream_xchacha20poly1305_TAG_FINAL;
 
@@ -93,16 +102,16 @@ export default class UppyEncrypt {
 
       this.streamController.enqueue(new Uint8Array(encryptedChunk));
 
-      this.uppy.emit('preprocess-progress', this.file, {
+      this.uppy.emit('preprocess-progress', this.file as any, {
         mode: 'determinate',
         message: `Encrypting ${this.file.name}...`,
-        value: this.index / this.file.size,
+        value: this.index / this.fileSize,
       });
 
       this.index += CHUNK_SIZE;
     }
 
-    this.uppy.emit('preprocess-progress', this.file, {
+    this.uppy.emit('preprocess-progress', this.file as any, {
       mode: 'determinate',
       message: `Encrypting ${this.file.name}...`,
       value: 1,

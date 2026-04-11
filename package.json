@@ -1,6 +1,6 @@
 {
   "name": "uppy-encrypt",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Uppy plugin to encrypt and decrypt files in the browser before upload using libsodium-wrappers",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -18,7 +18,9 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:uppy3": "npm i --no-save @uppy/core@^3.7.1 && vitest run; npm i --no-save @uppy/core@^4.0.0"
   },
   "repository": {
     "type": "git",
@@ -37,13 +39,18 @@
   },
   "homepage": "https://github.com/0sumcode/uppy-encrypt#readme",
   "devDependencies": {
+    "@uppy/core": "^4.0.0",
+    "happy-dom": "^20.8.9",
     "ts-node": "^10.9.1",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.2",
+    "vitest": "^4.1.4"
+  },
+  "peerDependencies": {
+    "@uppy/core": "^3.7.1 || ^4.0.0"
   },
   "dependencies": {
     "@types/libsodium-wrappers-sumo": "^0.7.8",
-    "@uppy/core": "^3.7.1",
     "libsodium-wrappers-sumo": "^0.7.13"
   }
 }

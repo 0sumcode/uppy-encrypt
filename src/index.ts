@@ -1,11 +1,27 @@
 import UppyEncrypt from './UppyEncrypt';
 import UppyDecrypt, { type DecryptedMetaData } from './UppyDecrypt';
 import _sodium from 'libsodium-wrappers-sumo';
-import { BasePlugin, type DefaultPluginOptions, Uppy } from '@uppy/core';
+import { BasePlugin as _BasePlugin, type Uppy } from '@uppy/core';
 
-interface UppyEncryptPluginOptions extends DefaultPluginOptions {
-  password: string | null;
+interface UppyEncryptPluginOptions {
+  id?: string;
+  password?: string | null;
 }
+
+// Uppy 3 exposed `BasePlugin<TOptions>` (1 generic); Uppy 4 exposes
+// `BasePlugin<Opts, M, B, PluginState>` where Opts/M/B have no defaults.
+// Cast to a narrow structural type so the same source compiles against
+// either major version. Runtime behavior is identical.
+const BasePluginCompat = _BasePlugin as unknown as new (
+  uppy: Uppy,
+  opts?: unknown,
+) => {
+  id: string;
+  type: string;
+  uppy: Uppy;
+  install(): void;
+  uninstall(): void;
+};
 
 // Sodium is initialized automatically within UppyEncrypt / UppyDecrypt
 // Optionally call this to ensure initialization
@@ -17,10 +33,10 @@ export const uppyEncryptReady = async () => {
   }
 };
 
-export class UppyEncryptPlugin extends BasePlugin {
+export class UppyEncryptPlugin extends BasePluginCompat {
   opts: UppyEncryptPluginOptions;
 
-  constructor(uppy: Uppy, opts?: UppyEncryptPluginOptions | undefined) {
+  constructor(uppy: Uppy, opts?: UppyEncryptPluginOptions) {
     super(uppy, opts);
     this.id = opts?.id ?? 'UppyEncryptPlugin';
     this.type = 'modifier';
