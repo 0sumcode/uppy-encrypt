@@ -33,6 +33,20 @@ const BasePluginCompat = _BasePlugin as unknown as new (
   setPluginState(update?: Partial<Record<string, unknown>>): Record<string, unknown>;
   update(state?: unknown): void;
   afterUpdate(): void;
+  // The remaining members exist on Uppy 3/4/5's `BasePlugin` but were absent
+  // from earlier versions of this shim. Without them, `uppy.use<T extends
+  // typeof BasePlugin<any, M, B>>(UppyEncryptPlugin)` fails structural
+  // assignability and consumers need a cast. `any` (not `unknown`) is required
+  // for the data members because TS checks property types invariantly — the
+  // shim's type must be assignable to the real `OptionalPluralizeLocale`/`I18n`
+  // shapes, and only `any` is bidirectionally compatible. Real values come
+  // from runtime BasePlugin inheritance and are never accessed by consumers.
+  defaultLocale: any;
+  i18n: any;
+  i18nArray: any;
+  VERSION: string;
+  i18nInit(): void;
+  addTarget(plugin: any): HTMLElement | null;
 };
 
 // Sodium is initialized automatically within UppyEncrypt / UppyDecrypt
