@@ -25,8 +25,13 @@ const BasePluginCompat = _BasePlugin as unknown as new (
   uninstall(): void;
   setOptions(newOpts: Partial<Record<string, unknown>>): void;
   getPluginState(): Record<string, unknown>;
-  setPluginState(update?: Partial<Record<string, unknown>>): void;
-  update(state: unknown): void;
+  // Uppy 3's BasePlugin.setPluginState returns Record<string, unknown>.
+  // Declaring void here makes TS reject the class as a BasePlugin subtype
+  // (return types are covariant), forcing `.use()` to fall through to
+  // UIPlugin and fail. A real return type is also valid against Uppy 4
+  // (where it's void), since returning-a-value is assignable to void.
+  setPluginState(update?: Partial<Record<string, unknown>>): Record<string, unknown>;
+  update(state?: unknown): void;
   afterUpdate(): void;
 };
 
