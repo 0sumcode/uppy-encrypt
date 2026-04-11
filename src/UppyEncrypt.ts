@@ -2,9 +2,11 @@ import type { Uppy, UppyFile } from '@uppy/core';
 import _sodium from 'libsodium-wrappers-sumo';
 import { CHUNK_SIZE, SIGNATURE } from './constants';
 
-// `any` generics keep this compatible with both Uppy 3.x
-// (`UppyFile<TMeta, TBody>`) and Uppy 4.x (`UppyFile<M extends Meta, B extends Body>`)
-// without forcing consumers to pin a specific Body shape.
+// `any` generics keep this compatible with Uppy 3.x (`UppyFile<TMeta, TBody>`),
+// 4.x and 5.x (`UppyFile<M extends Meta, B extends Body>`) without forcing
+// consumers to pin a specific Body shape. Uppy 5 splits `UppyFile` into a
+// discriminated union (`LocalUppyFile | RemoteUppyFile`); we narrow `data` to
+// `Blob` at the access sites since encryption only runs for local files.
 type AnyUppyFile = UppyFile<any, any>;
 
 // Init Sodium
@@ -33,9 +35,9 @@ export default class UppyEncrypt {
     this.uppy = uppy;
     this.file = file;
     this.password = password;
-    // Uppy 4 types `UppyFile.size` as `number | null`; fall back to the
+    // Uppy 4+ types `UppyFile.size` as `number | null`; fall back to the
     // underlying Blob/File size when Uppy hasn't populated it yet.
-    this.fileSize = file.size ?? file.data.size;
+    this.fileSize = file.size ?? (file.data as Blob).size;
 
     // Set Uppy event handlers that effect the encryption process
     uppy.on('cancel-all', () => {
@@ -97,7 +99,7 @@ export default class UppyEncrypt {
           ? sodium.crypto_secretstream_xchacha20poly1305_TAG_MESSAGE
           : sodium.crypto_secretstream_xchacha20poly1305_TAG_FINAL;
 
-      const chunk = await this.file.data.slice(this.index, this.index + CHUNK_SIZE).arrayBuffer();
+      const chunk = await (this.file.data as Blob).slice(this.index, this.index + CHUNK_SIZE).arrayBuffer();
       const encryptedChunk = sodium.crypto_secretstream_xchacha20poly1305_push(this.state, new Uint8Array(chunk), null, tag);
 
       this.streamController.enqueue(new Uint8Array(encryptedChunk));

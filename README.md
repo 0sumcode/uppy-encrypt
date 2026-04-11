@@ -10,13 +10,14 @@ A live implementation of Uppy Encrypt can be seen on [0up.io](https://0up.io) [[
 
 ## Compatibility
 
-`uppy-encrypt` supports both `@uppy/core` 3.x and 4.x. `@uppy/core` is a peer
+`uppy-encrypt` supports `@uppy/core` 3.x, 4.x, and 5.x. `@uppy/core` is a peer
 dependency, so install it alongside `uppy-encrypt`:
 
-| uppy-encrypt | @uppy/core     |
-| ------------ | -------------- |
-| `^2.0.0`     | `^3.7.1 \|\| ^4.0.0` |
-| `^1.0.0`     | `^3.7.1`       |
+| uppy-encrypt | @uppy/core                       |
+| ------------ | -------------------------------- |
+| `^2.1.0`     | `^3.7.1 \|\| ^4.0.0 \|\| ^5.0.0` |
+| `^2.0.0`     | `^3.7.1 \|\| ^4.0.0`             |
+| `^1.0.0`     | `^3.7.1`                         |
 
 ## Installation
 
