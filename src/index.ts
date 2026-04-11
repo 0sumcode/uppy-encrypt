@@ -10,8 +10,10 @@ interface UppyEncryptPluginOptions {
 
 // Uppy 3 exposed `BasePlugin<TOptions>` (1 generic); Uppy 4 exposes
 // `BasePlugin<Opts, M, B, PluginState>` where Opts/M/B have no defaults.
-// Cast to a narrow structural type so the same source compiles against
-// either major version. Runtime behavior is identical.
+// Cast to a structural type covering the BasePlugin instance surface that
+// `uppy.use()` type-checks against on both majors — including setOptions,
+// getPluginState, setPluginState which Uppy 3's `.use()` requires.
+// Runtime behavior is identical: the real BasePlugin supplies these.
 const BasePluginCompat = _BasePlugin as unknown as new (
   uppy: Uppy,
   opts?: unknown,
@@ -21,6 +23,11 @@ const BasePluginCompat = _BasePlugin as unknown as new (
   uppy: Uppy;
   install(): void;
   uninstall(): void;
+  setOptions(newOpts: Partial<Record<string, unknown>>): void;
+  getPluginState(): Record<string, unknown>;
+  setPluginState(update?: Partial<Record<string, unknown>>): void;
+  update(state: unknown): void;
+  afterUpdate(): void;
 };
 
 // Sodium is initialized automatically within UppyEncrypt / UppyDecrypt

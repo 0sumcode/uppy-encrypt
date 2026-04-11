@@ -27,7 +27,7 @@ npm i uppy-encrypt @uppy/core
 ## Encryption Example
 ```javascript
 import { Uppy } from '@uppy/core';
-import UppyEncryptPlugin from 'uppy-encrypt';
+import { UppyEncryptPlugin } from 'uppy-encrypt';
 
 const uppy = new Uppy();
 uppy.use(UppyEncryptPlugin);
